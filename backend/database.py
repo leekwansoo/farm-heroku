@@ -1,3 +1,6 @@
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+
 from model import *
 import motor.motor_asyncio
 from dotenv import dotenv_values
@@ -15,10 +18,10 @@ collection = database.tasks
 
 async def fetch_all_tasks():
     tasks = []
-    cursor = collection.find()
+    cursor = collection.find({})
     async for doc in cursor:
-        print(cursor)
-        tasks.append(task(**doc))
+        task = Task(**doc)
+        tasks.append(task)
     return tasks
 
 async def fetch_one_task(id):
@@ -31,7 +34,12 @@ async def create_task(task):
     result = await fetch_one_task(task.id)
     return result
 
-async def change_task(id, title, desc, checked):
+async def change_task(task):
+    print(task)
+    id = task.id
+    title = task.title
+    desc = task.desc
+    checked = task.checked
     await collection.update_one({"id": id}, {"$set": {"title": title, "desc": desc, "checked": checked}})
     result = await fetch_one_task(id)
     return result

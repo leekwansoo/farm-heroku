@@ -41,7 +41,7 @@ async def add_task(task: Task):
 
 @app.put("/api/update-task/{id}", response_model=Task)
 async def update_task(task: Task):
-    result = await change_task(id, title, desc, checked)
+    result = await change_task(task)
     if not result: raise HTTPException(400)
     return result
 
